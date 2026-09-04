@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <cstdlib>
 
 using namespace std;
 
@@ -14,6 +15,8 @@ int memoryPointerLocation = 0;
 int codePointerLocation = 0;
 int lastOpenBracketLocation = -1;
 int nextClosedBracketLocation = -1;
+
+int randomNum = 0;
 
 void ClearMemory()
 {
@@ -135,6 +138,10 @@ int ExecuteCode(int length)
 			case ']':
 				handleCharacterResult = HandleCloseBracket();
 				if (handleCharacterResult == -1) return -1;
+				break;
+			case '?':
+				randomNum = rand() % 256;
+				memory[memoryPointerLocation] = randomNum;
 				break;
 			default:
 				break;
