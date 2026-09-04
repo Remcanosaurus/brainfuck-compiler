@@ -26,13 +26,26 @@ void HandleComma()
 {
 	bool success = false;
 	string answer;
+	cout << "\nVoer een karakter in:";
 	while (!success)
 	{
 		cin >> answer;
 		if (answer.length() == 1) success = true;
-		else cout << "Input must be 1 character!";
+		else cout << "\nInput moet 1 karakter zijn!\nVoer een karakter in:";
 	}
 	memory[memoryPointerLocation] = (int)answer[0];
+}
+
+void HandleSemicolon()
+{
+	int invoerGetal = 0;
+	cout << "\nVoer een getal in:";
+	if (cin >> invoerGetal) {
+		memory[memoryPointerLocation] = static_cast<unsigned char>(invoerGetal);
+	}
+	else {
+		cout << "\nFout: Ongeldige invoer.\nVoer een getal in:";
+	}
 }
 
 int HandleOpenBracket(int length)
@@ -106,8 +119,14 @@ int ExecuteCode(int length)
 			case ':':
 				cout << (int)memory[memoryPointerLocation];
 				break;
+			case '/':
+				cout << " / ";
+				break;
 			case ',':
 				HandleComma();
+				break;
+			case ';':
+				HandleSemicolon();
 				break;
 			case '[':
 				handleCharacterResult = HandleOpenBracket(length);
