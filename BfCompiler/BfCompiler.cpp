@@ -103,6 +103,9 @@ int ExecuteCode(int length)
 			case '.':
 				cout << (char)memory[memoryPointerLocation];
 				break;
+			case ':':
+				cout << (int)memory[memoryPointerLocation];
+				break;
 			case ',':
 				HandleComma();
 				break;
