@@ -499,3 +499,5 @@ FodyWeavers.xsd
 *.msp
 /BfCompiler/TestScript.Bf
 /BfCompiler/TestScript.Bf
+/BfCompiler/skibi.bf
+/BfCompiler/Test.bf
