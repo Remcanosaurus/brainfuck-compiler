@@ -126,7 +126,7 @@
     <ClCompile Include="BfCompiler.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="TestScript.Bf" />
+    <None Include="Test.bf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

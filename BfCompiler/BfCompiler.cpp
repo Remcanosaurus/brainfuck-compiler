@@ -8,13 +8,15 @@ using namespace std;
 
 char* brainfuckCommands;
 
-int8_t memory[256];
+uint8_t memory[256];
+int16_t functionMemory[256] = {};
 
 int memoryPointerLocation = 0;
 
 int codePointerLocation = 0;
 int lastOpenBracketLocation = -1;
 int nextClosedBracketLocation = -1;
+int functionCalledPointer = -1;
 
 int randomNum = 0;
 
@@ -25,6 +27,7 @@ void ClearMemory()
 	nextClosedBracketLocation = -1;
 	lastOpenBracketLocation = -1;
 	for (int i = 0; i < sizeof(memory) / sizeof(memory[0]); i++) memory[i] = 0;
+	for (int i = 0; i < sizeof(functionMemory) / sizeof(functionMemory[0]); i++) functionMemory[i] = -1;
 }
 
 void HandleComma()
@@ -53,7 +56,7 @@ void HandleSemicolon()
 	}
 }
 
-int HandleOpenBracket(int length)
+void HandleOpenBracket(int length)
 {
 	lastOpenBracketLocation = codePointerLocation;
 
@@ -67,7 +70,6 @@ int HandleOpenBracket(int length)
 	if (nextClosedBracketLocation == -1)
 	{
 		cout << "\n'[' haakje gevonden zonder matchende ']'!";
-		return -1;
 	}
 
 	if (memory[memoryPointerLocation] == 0)
@@ -76,15 +78,13 @@ int HandleOpenBracket(int length)
 	}
 
 	nextClosedBracketLocation = -1;
-	return 0;
 }
 
-int HandleCloseBracket()
+void HandleCloseBracket()
 {
 	if (lastOpenBracketLocation == -1)
 	{
 		cout << "\n']' haakje gevonden zonder matchende '['!";
-		return -1;
 	}
 
 	if (memory[memoryPointerLocation] != 0)
@@ -93,7 +93,47 @@ int HandleCloseBracket()
 	}
 
 	lastOpenBracketLocation = -1;
-	return 0;
+}
+
+void HandleOpenAccolade(int length)
+{
+	int nextClosedAccoladeLocation = -1;
+	for (int i = codePointerLocation; i < length; i++)
+	{
+		if (brainfuckCommands[i] != '}') continue;
+		nextClosedAccoladeLocation = i;
+		break;
+	}
+
+	if (nextClosedAccoladeLocation == -1)
+	{
+		cout << "\n'{' haakje gevonden zonder matchende '}'!";
+		return;
+	}
+	functionMemory[memory[memoryPointerLocation]] = codePointerLocation + 1;
+	codePointerLocation = nextClosedAccoladeLocation;
+}
+
+void HandleCloseAccolade()
+{
+	if (functionCalledPointer == -1)
+	{
+		cout << "\n'}' haakje gevonden zonder een function call!";
+		return;
+	}
+
+	codePointerLocation = functionCalledPointer;
+}
+
+void HandleExclamationMark()
+{
+	if (functionMemory[memory[memoryPointerLocation]] == -1)
+	{
+		cout << "\n'!' function call gevonden zonder een function definition!";
+		return;
+	}
+	functionCalledPointer = codePointerLocation;
+	codePointerLocation = functionMemory[memory[memoryPointerLocation]] - 1;
 }
 
 int ExecuteCode(int length)
@@ -134,12 +174,19 @@ int ExecuteCode(int length)
 				HandleSemicolon();
 				break;
 			case '[':
-				handleCharacterResult = HandleOpenBracket(length);
-				if (handleCharacterResult == -1) return -1;
+				HandleOpenBracket(length);
 				break;
 			case ']':
-				handleCharacterResult = HandleCloseBracket();
-				if (handleCharacterResult == -1) return -1;
+				HandleCloseBracket();
+				break;
+			case '{':
+				HandleOpenAccolade(length);
+				break;
+			case '}':
+				HandleCloseAccolade();
+				break;
+			case '!':
+				HandleExclamationMark();
 				break;
 			case '?':
 				randomNum = rand() % 256;
