@@ -136,6 +136,20 @@ void HandleExclamationMark()
 	codePointerLocation = functionMemory[memory[memoryPointerLocation]] - 1;
 }
 
+void HandleAsterisk()
+{
+	int addAmount = (int)memory[memoryPointerLocation];
+	vector<uint8_t> byteList(addAmount);
+	for (int i = 0; i < addAmount; i++) {
+		byteList[i] = memory[memoryPointerLocation + 1 + i];
+	}
+	uint32_t result = 0;
+	for (uint8_t byte : byteList) {
+		result = (result << 8) | byte;
+	}
+	cout << result;
+}
+
 int ExecuteCode(int length)
 {
 	bool finishedCode = false;
@@ -191,6 +205,9 @@ int ExecuteCode(int length)
 			case '?':
 				randomNum = rand() % 256;
 				memory[memoryPointerLocation] = randomNum;
+				break;
+			case '*':
+				HandleAsterisk();
 				break;
 			default:
 				break;
