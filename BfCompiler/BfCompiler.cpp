@@ -46,14 +46,16 @@ void HandleComma()
 
 void HandleSemicolon()
 {
+	bool success = false;
 	int invoerGetal = 0;
-	cout << "\nVoer een getal in:";
-	if (cin >> invoerGetal) {
-		memory[memoryPointerLocation] = static_cast<unsigned char>(invoerGetal);
+	cout << "\nVoer een getal in (0-255):";
+	while (!success) {
+		if (cin >> invoerGetal && invoerGetal >= 0 && invoerGetal <= 255) success = true;
+		else {
+			cout << "\nFout: Ongeldige invoer.\nVoer een getal in (0-255):";
+		}
 	}
-	else {
-		cout << "\nFout: Ongeldige invoer.\nVoer een getal in:";
-	}
+	memory[memoryPointerLocation] = static_cast<uint8_t>(invoerGetal);
 }
 
 void HandleOpenBracket(int length)
