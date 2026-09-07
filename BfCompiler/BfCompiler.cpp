@@ -20,6 +20,8 @@ int functionCalledPointer = -1;
 
 int randomNum = 0;
 
+vector<int> bracketPairs;
+
 void ClearMemory()
 {
 	memoryPointerLocation = 0;
@@ -28,6 +30,48 @@ void ClearMemory()
 	lastOpenBracketLocation = -1;
 	for (int i = 0; i < sizeof(memory) / sizeof(memory[0]); i++) memory[i] = 0;
 	for (int i = 0; i < sizeof(functionMemory) / sizeof(functionMemory[0]); i++) functionMemory[i] = -1;
+
+	bracketPairs.clear();
+}
+
+bool BuildBracketPairs(int length)
+{
+	bracketPairs.assign(length, -1);
+
+	// Stack voor nested [.
+	vector<int> openBrackets;
+
+	for (int i = 0; i < length; i++)
+	{
+		if (brainfuckCommands[i] == '[')
+		{
+			openBrackets.push_back(i);
+		}
+		else if (brainfuckCommands[i] == ']')
+		{
+			if (openBrackets.empty())
+			{
+				cout << "\n']' haakje gevonden zonder matchende '[' op positie "
+					<< i << "!\n";
+				return false;
+			}
+
+			int openPosition = openBrackets.back();
+			openBrackets.pop_back();
+
+			bracketPairs[openPosition] = i;
+			bracketPairs[i] = openPosition;
+		}
+	}
+
+	if (!openBrackets.empty())
+	{
+		cout << "\n'[' haakje gevonden zonder matchende ']' op positie "
+			<< openBrackets.back() << "!\n";
+		return false;
+	}
+
+	return true;
 }
 
 void HandleComma()
@@ -60,41 +104,36 @@ void HandleSemicolon()
 
 void HandleOpenBracket(int length)
 {
-	lastOpenBracketLocation = codePointerLocation;
+	int matchingBracket = bracketPairs[codePointerLocation];
 
-	for (int i = codePointerLocation; i < length; i++)
+	if (matchingBracket == -1)
 	{
-		if (brainfuckCommands[i] != ']') continue;
-		nextClosedBracketLocation = i;
-		break;
+		cout << "\n'[' heeft geen matchende ']'!\n";
+		return;
 	}
 
-	if (nextClosedBracketLocation == -1)
-	{
-		cout << "\n'[' haakje gevonden zonder matchende ']'!";
-	}
-
+	// Skip loop als memory = 0
 	if (memory[memoryPointerLocation] == 0)
 	{
-		codePointerLocation = nextClosedBracketLocation - 1;
+		codePointerLocation = matchingBracket;
 	}
-
-	nextClosedBracketLocation = -1;
 }
 
 void HandleCloseBracket()
 {
-	if (lastOpenBracketLocation == -1)
+	int matchingBracket = bracketPairs[codePointerLocation];
+
+	if (matchingBracket == -1)
 	{
-		cout << "\n']' haakje gevonden zonder matchende '['!";
+		cout << "\n']' heeft geen matchende '['!\n";
+		return;
 	}
 
+	// Jump terug naar [ als memory niet 0 is.
 	if (memory[memoryPointerLocation] != 0)
 	{
-		codePointerLocation = lastOpenBracketLocation - 1;
+		codePointerLocation = matchingBracket;
 	}
-
-	lastOpenBracketLocation = -1;
 }
 
 void HandleOpenAccolade(int length)
@@ -255,6 +294,10 @@ int TryReadNewFile()
 	stream.close();
 
 	ClearMemory();
+
+	// Vind matchende [ en ].
+	if (!BuildBracketPairs(length))
+		return 0;
 
 	int result = ExecuteCode(length);
 	return result;
