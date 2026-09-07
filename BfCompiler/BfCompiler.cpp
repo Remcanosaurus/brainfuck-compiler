@@ -19,6 +19,8 @@ void ClearMemory()
 {
 	memoryPointerLocation = 0;
 	codePointerLocation = 0;
+	nextClosedBracketLocation = -1;
+	lastOpenBracketLocation = -1;
 	for (int i = 0; i < sizeof(memory) / sizeof(memory[0]); i++) memory[i] = 0;
 }
 
