@@ -19,6 +19,7 @@ int nextClosedBracketLocation = -1;
 int functionCalledPointer = -1;
 
 int randomNum = 0;
+bool comment = false;
 
 vector<int> bracketPairs;
 
@@ -199,8 +200,9 @@ int ExecuteCode(int length)
 		char nextCommand = brainfuckCommands[codePointerLocation];
 
 		int handleCharacterResult = 0;
-		switch (nextCommand)
-		{
+		if (!comment) {
+			switch (nextCommand)
+			{
 			case '>':
 				if (memoryPointerLocation < 255) memoryPointerLocation += 1;
 				break;
@@ -256,7 +258,10 @@ int ExecuteCode(int length)
 				break;
 			default:
 				break;
+			}
 		}
+
+		if (nextCommand == '#') comment = !comment;
 		codePointerLocation += 1;
 
 		if (codePointerLocation > length) finishedCode = true;
