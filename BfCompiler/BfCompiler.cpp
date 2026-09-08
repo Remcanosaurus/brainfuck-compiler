@@ -250,6 +250,10 @@ int ExecuteCode(int length)
 			case '*':
 				HandleAsterisk();
 				break;
+			case '^':
+				if (memory[memoryPointerLocation] == 0) memory[memoryPointerLocation] = 255;
+				else memory[memoryPointerLocation] = 0;
+				break;
 			default:
 				break;
 		}

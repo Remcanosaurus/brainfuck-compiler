@@ -126,7 +126,7 @@
     <ClCompile Include="BfCompiler.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="skibi.bf" />
+    <None Include="Kwadrateren.bf" />
     <None Include="Test.bf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

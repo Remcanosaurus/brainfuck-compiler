@@ -23,6 +23,6 @@
     <None Include="Test.bf">
       <Filter>Source Files</Filter>
     </None>
-    <None Include="skibi.bf" />
+    <None Include="Kwadrateren.bf" />
   </ItemGroup>
 </Project>
