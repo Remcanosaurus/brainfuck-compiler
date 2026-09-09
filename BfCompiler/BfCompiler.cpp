@@ -271,17 +271,19 @@ int ExecuteCode(int length)
 	return 0;
 }
 
-int TryReadNewFile()
+int TryReadNewFile(string filePath = "")
 {
-    cout << "Geef Brainfuck Bestand (*.bf): ";
+	string fileName = filePath;
+	if (fileName == "") {
+		cout << "Geef Brainfuck Bestand (*.bf): ";
 
-    string fileName;
-    cin >> fileName;
+		cin >> fileName;
 
-	if (fileName == "q" || fileName == "Q")
-	{
-		cout << "Programma afsluiten...\n";
-		return -1;
+		if (fileName == "q" || fileName == "Q")
+		{
+			cout << "Programma afsluiten...\n";
+			return -1;
+		}
 	}
 
     int length;
@@ -315,11 +317,14 @@ int TryReadNewFile()
 
 
 
-int main()
+int main(int argc, char* argv[])
 {
+	cout << "Brainfuck" << endl;
 	int result = 0;
-	//while (result == 0)	
-		result = TryReadNewFile();
+	string arg = "";
+	if(argc > 1) arg = argv[1];
+	//while (result == 0)
+	result = TryReadNewFile(arg);
 	system("pause");
 	return 0;
 }
