@@ -318,8 +318,8 @@ int TryReadNewFile()
 int main()
 {
 	int result = 0;
-	while (result == 0)	
+	//while (result == 0)	
 		result = TryReadNewFile();
-
+	system("pause");
 	return 0;
 }
